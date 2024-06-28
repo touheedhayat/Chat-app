@@ -16,6 +16,7 @@
             type:String,
             required:true,
            minlength:6
+        
         },
 
         gender:{

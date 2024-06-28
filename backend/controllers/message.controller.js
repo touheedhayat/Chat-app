@@ -1,6 +1,7 @@
 // import { object } from "webidl-conversions";
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 
 export const sendMessage = async(req, res)=>{
@@ -41,6 +42,12 @@ try {
     // await newMessage.save();     //    this will take one 1 sec after the above conversation will save into conversation liset
 
     await Promise.all([conversation.save(), newMessage.save()])
+
+    const receiverSocketId = getReceiverSocketId(recieverId);
+    if(receiverSocketId){
+        io.to(receiverSocketId).emit("newMessage",newMessage)
+    }
+
     res.status(201).json(newMessage)
     
 } catch (error) {
